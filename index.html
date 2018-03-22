@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clustering Data with D3</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+  <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  <script src="js/kmeans.min.js"></script>
+  <script src="js/d3.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Raleway|Roboto:700" rel="stylesheet">
+
+</head>
+<body>
+    <div class="header" id="myHeader">
+        <h1 style="position:relative; top:40%"> K-Means Clustering Algorithm</h1>
+    </div>
+
+
+    <p>Clustering is a technique for finding similarity groups in a data, called clusters.
+        It attempts to group individuals in a population together by similarity, but not driven by a specific purpose.
+        K-means clustering is a type of unsupervised learning, which is used when you have unlabeled data
+        (i.e., data without defined categories or groups). The goal of this algorithm is to find groups in the
+        data, with the number of groups represented by the variable K. The algorithm works iteratively to assign
+        each data point to one of K groups based on the features that are provided. Data points are clustered
+        based on feature similarity. The results of the K-means clustering algorithm are:</p>
+
+    <ul style="padding-left: 240px; padding-right: 200px;">
+        <li> The centroids of the K clusters, which can be used to label new data</li>
+        <li>Labels for the training data (each data point is assigned to a single cluster)</li>
+    </ul>
+    <br/>
+
+    <div id="page_header">
+      <h3 style="padding-left: 200px;"> Let's learn with an example</h3>
+    </div>
+
+    <p>Imagine a retail website that needs to decide who gets certain offers based on the number of products
+     they have bought and also the number of products they have reviewed on the portal. For this purpose,
+  we would need to cluster people in groups logically. The simplest approach would be k-means clustering.</p>
+
+    <div class="container">
+        <div id='graphic'>
+            <div id='sections'>
+                <section class="step">
+                    <div class="title">K-means Clustering Algorithm</div>
+                    To illustrate how the k-means clustering algorithm works, scroll down to follow each step of this algorithm.
+                </section>
+                <section class="step">
+                    <div class="title">Initial Graph</div>
+                    Let's consider 25 random data points in a vector space (for the above mentioned example, these would be customers).
+                </section>
+                <section class="step">
+                    <div class="title">Step 1 - Plot the Centroids on a scatterplot</div>
+                    We then choose any 3 random points in our vector space as our centroids and color them to distinguish them from each other.
+                </section>
+                <section class="step">
+                    <div class="title">Step 2 - Cluster Assignment</div>
+                    For each data point(x<sub>i</sub>), find the nearest centroid(c<sub>j</sub>) by calculating either the Euclidean distance or Manhattan distance.
+                    Assign each data point to the nearest centroid and change it to the corresponding centroid color.
+                    <br/><br/>
+                    Manhattan distance is used for data where dimensions are not comparable and data noise (variance) is not high otherwise Euclidean distance is used. In general, Euclidean distance reduces error prcentage is datasets with comparable dimensions.
+
+                </section>
+                <section class="step">
+                    <div class="title">Step 3 - Euclidean Distance</div>
+                    For this graph, we have used Euclidean distance to calculate and assign each data point to its nearest centroid.<br/>
+                    This distance is given by the formula: <br/>
+                    <img src="distance.gif">
+                    <br/><br/><strong>Hover over the lines or points to view the distance of the point from its corresponding centroid.</strong>
+
+                </section>
+                <section class="step">
+                    <div class="title">Step 4 - Recalculating Centroids till Local Optimum is reached</div>
+                    Recalculate the new centroids for every cluster by finding the mean of all the points assigned to the previous jth cluster.
+                     Change the centroid and reassign cluster points based on lowest distance. Repeat this till no point changes its cluster.<br/><br/>
+                     <strong>Observe the graph to see the centroids and clusters change till local optimum (0 points change) is achieved.</strong>
+                </section>
+
+                <section class="step">
+                    <div class="title">Is optimum really optimal?</div>
+                    Unfortunately k-means is dependent on the number of clusters we choose and the initial centroids we choose. Which means the local
+                    optimum clusters might not be the best solution. To find optimum number of clusters, concept of <a href="https://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set" target="_blank">Elbow Point</a> is used. <br/><br/>
+                    <strong> So how will our retail website use this algorithm? Scroll on to find out! </strong>
+                </section>
+
+            </div>
+
+            <div id='vis'>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="page_header">
+      <h3 style="padding-left: 200px;"> What does this mean?</h3>
+    </div>
+
+    <p>When the local optimum is achieved, all the points get assigned clusters based on their similarity to each other (their distance from each other).
+    Tieing it to our initial example, this means that customers who buy high number of products and have given lots of reviews would get one type of deal, while
+    those customers that buy few products and have given fewer reviews would get another deal. <br/> Similarly, people who have bought many products while giving few reviews
+    would get a different deal and those who have bought few products but have given a lot of reviews would get another deal.
+    </p>
+    <br/>
+
+
+
+    <div class="container2">
+
+            <h1><center> Try It Yourself! </center></h1>
+            <p>Here you get the chance to choose your own settings and see the clusters come to life! <br/>
+            You can choose as many points <strong>(N)</strong> as you want and upto 15 clusters <strong>(K)</strong> to cluster your data points. <br/>
+            Use the <strong>'Step'</strong> button to update the centroid and intermediate clusters till local optimum is reached. <br/>
+            Use the <strong>'Reset'</strong> button to restart and randomize the initial data points.</p>
+            <table>
+                <tr>
+                    <td style="vertical-align:top; padding-left: 200px;">
+
+            <div id="buttons" style="position: block-inline; width: 600px;">
+
+              <label for="N" style="padding-right:8px">Enter the number of nodes you want (N): </label><input type="number" style="position: block-inline; width:60px;" id="Ninteractive" min="2" value="30"  onkeyup="GeneratePoints();">
+              <button id="btnstep" style="height: 25px; width: 100px;" onclick="step();">Step</button>
+
+              <br/><br/>
+                <label id="lblcurrentK" for="txtcurrentK" style="padding-right:92px">Current Value of K (Max 15):</label>
+                <input style="position: block-inline; width:60px;" name="txtcurrentK" id="txtcurrentK" class="no-spinners" type="number" max="15" readonly></input>
+                <button id="btnInc" style="height: 25px; width: 100px;" onclick="ChangeClustersK(1);">Increase K</button>
+                <button id="btnDec" style="height: 25px; width: 100px;" onclick="ChangeClustersK(-1);">Decrease K</button>
+              <br/><br/>
+              <button id="btnreset" style="height: 25px; width: 100px; position:relative; left: 341px;" onclick="reset();">Reset</button>
+              <br/><br/>
+
+              <table id="stats-table" align="left">
+                <tr>
+                  <td>
+                    Number of Points Changing Clusters
+                  </td>
+                </tr>
+              </table>
+          </div>
+      </td>
+      <td style="height: 500px; width: 600px;">
+
+          <div id="vis2">
+
+              <script>
+              var ranges = [ [0,8], [0,5] ];
+              var points = kmeans.generateRandomPoints(ranges, d3.select('#Ninteractive')[0][0].value);
+              var means = [];
+              var zeroreached = 0;
+              var currentK = 0;
+
+              var assignments = kmeans.assignPointsToMeans(points, means);
+
+              var margin2 = {top: 100, right: 10, bottom: 170, left: 130},
+                  width2 = 650,
+                  height2 = 500;
+
+              var chart2 = d3.select("#vis2").append("svg")
+                      //.attr("width", width2 + margin2.left + margin2.right)
+                      //.attr("height", margin2.top + margin2.bottom + height2)
+                      .attr("width", width2)
+                      .attr("height", height2)
+                      .on('click', function() {
+                        d3.event.preventDefault();
+                        step();
+                        });;
+
+              //var svg = d3.select('#graph').append('svg').attr('width',960).attr('height',500);
+              //SVG area for graph
+              var graph = chart2.append("g")
+                          .attr("transform", "translate(" + margin2.left + "," + margin2.top +")");
+
+              //var graph = svg.append('g').attr('transform', 'translate(460,0)');
+              var meanLayer = graph.append('g');
+
+              var xScale = d3.scale.linear().domain([0,10]).range([0,400]);
+              var yScale = d3.scale.linear().domain([0,10]).range([0,500]);
+              var color = d3.scale.category10();
+
+              function drawInter() {
+
+                //Add the data points
+                var pointDots = graph.selectAll('.pointDots').data(points);
+                //add colour to the data points according to their cluster assignment
+                colorizePoints(points);
+                pointDots.exit().remove();
+                pointDots.enter().append('circle').attr('class','pointDots')
+                  .attr('r', 3)
+                  .attr('cx',function(d){ return xScale(d[0]); })
+                  .attr('cy',function(d){ return yScale(d[1]); })
+                  .attr('fill', function(d){return d.fill; });
+
+                //Add the lines to each point
+                var assignmentLines = meanLayer.selectAll('.assignmentLines').data(assignments);
+                assignmentLines.enter().append('line').attr('class','assignmentLines')
+                  .attr('x1',function(d, i){ return xScale(points[i][0]); })
+                  .attr('y1',function(d, i){ return yScale(points[i][1]); })
+                  .attr('x2',function(d, i){ return xScale(means[d][0]); })
+                  .attr('y2',function(d, i){ return yScale(means[d][1]); })
+                  .attr('stroke', function(d) { return color(d); });
+
+                assignmentLines.transition().duration(500)
+                  .attr('x2',function(d, i){ return xScale(means[d][0]); })
+                  .attr('y2',function(d, i){ return yScale(means[d][1]); })
+                  .attr('stroke', function(d) { return color(d); });
+
+                //add the mean points
+                var meanPoints = meanLayer.selectAll('.meanPoints').data(means);
+                meanPoints.enter().append('circle').attr('class','meanPoints')
+                  .attr('r', 5)
+                  .attr('stroke', function(d, i) { return color(i); })
+                  .attr('stroke-width', 3)
+                  .attr('fill', 'white')
+                  .attr('cx',function(d){ return xScale(d[0]); })
+                  .attr('cy',function(d){ return yScale(d[1]); });
+                meanPoints.transition().duration(500)
+                  .attr('cx',function(d){ return xScale(d[0]); })
+                  .attr('cy',function(d){ return yScale(d[1]); });
+                meanPoints.exit().remove();
+
+              }
+              //Start graph with 3 clusters
+              ChangeClustersK(3);
+              drawInter();
+
+                /**
+                 * All points assume the color of the assigned centroid.
+                 */
+                function colorizePoints(points) {
+                    i=0;
+                    points.forEach(function(d) {
+                        d.fill = color(assignments[i]);
+                        i++;
+                    });
+                };
+
+              //Function is triggered on each step click
+              function step() {
+
+                oldAssignments = assignments;
+
+                kmeans.moveMeansToCenters(points, assignments, means);
+
+                assignments = kmeans.assignPointsToMeans(points, means);
+
+                var changeCount = kmeans.countChangedAssignments(assignments, oldAssignments);
+                if(changeCount == 0 && zeroreached == 0)
+                {
+                    zeroreached = 1;
+                }
+                else if (changeCount == 0 && zeroreached == 1)
+                {
+                  document.getElementById("btnstep").disabled = true;
+                  return;
+                }
+                else
+                {
+                  chart2.selectAll("circle").remove();
+                }
+                var aveDistance = kmeans.findAverageDistancePointToMean(points, means, assignments);
+                var aveMeanSeparation = kmeans.findAverageMeanSeparation(means);
+                //sum of squared errors
+                var sse = kmeans.sumSquaredError(points, means, assignments);
+
+                var row = d3.select('#stats-table').append('tr');
+                row.attr("class","tr-data");
+                row.append('td').html(changeCount);
+                drawInter();
+              }
+
+              //function is triggered on click of reset
+              function reset(){
+                document.getElementById("btnstep").disabled = false;
+                $("#Ninteractive").val(30);
+                points = kmeans.generateRandomPoints(ranges, d3.select('#Ninteractive')[0][0].value);
+                means = [];
+                chart2.selectAll("circle.meanPoints").remove();
+                chart2.selectAll("circle").remove();
+                chart2.selectAll("line").remove();
+                $('.tr-data').remove();
+                currentK = 0;
+                ChangeClustersK(3);
+                drawInter();
+              }
+
+              //point distances are changed with means on increase/decrease of K value
+              function ChangeClustersK(amt) {
+                currentK = currentK + amt;
+                document.getElementById("txtcurrentK").value = currentK;
+                zeroreached = 0;
+                if(currentK > 0)
+                {
+                  document.getElementById("btnstep").disabled = false;
+                  document.getElementById("btnDec").disabled = false;
+                  if(currentK == 15)
+                  {
+                    document.getElementById("btnInc").disabled = true;
+                  }
+                  else
+                  {
+                    document.getElementById("btnInc").disabled = false;
+                  }
+                  if (amt > 0) {
+                    while (amt--) {
+                      chart2.selectAll("circle").remove();
+                      var i = Math.floor(Math.random() * points.length);
+
+                      var p = points[i];
+                      var newPoint = p.slice(0);
+                      means.push(newPoint);
+                    }
+                  }
+                  else while (amt < 0) {
+                    chart2.selectAll("circle").remove();
+                    means.pop();
+                    amt++;
+                  }
+                }
+                else
+                {
+                  currentK = 1;
+                  document.getElementById("txtcurrentK").value = currentK;
+                  document.getElementById("btnstep").disabled = true;
+                  document.getElementById("btnDec").disabled = true;
+                }
+                assignments = kmeans.assignPointsToMeans(points, means);
+                //colorizePoints(points);
+                drawInter();
+              }
+
+              //Random points are generated
+              function GeneratePoints(){
+                points = kmeans.generateRandomPoints(ranges, d3.select('#Ninteractive')[0][0].value);
+                means = [];
+                chart2.selectAll("circle.meanPoints").remove();
+                chart2.selectAll("circle").remove();
+                chart2.selectAll("line").remove();
+                amt = currentK;
+                currentK = 0;
+                ChangeClustersK(amt);
+                drawInter();
+              }
+
+              </script>
+          </div>
+      </td>
+  </tr>
+</table>
+
+
+
+</div>
+
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script> <script src="js/d3.min.js"></script>
+    <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script src="js/kmeans.min.js"></script>
+    <script src="js/scroller.js"></script>
+    <script src="js/sections.js"></script>
+</body>
+</html>
